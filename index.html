@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+  <title>Parson's "Hack"</title>
+  <style>
+      html, body {
+          position: relative;
+          width: 100%;
+          height: 100%;
+      }
+
+      html {
+          display: flex;
+          justify-content: center;
+      }
+
+      body {
+          color: #333;
+          margin: 0;
+          box-sizing: border-box;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+          font-size: 14pt;
+      }
+
+      @media (max-width: 600px) {
+          body {
+              max-width: 100%;
+              padding: 1rem;
+          }
+      }
+      @media (min-width: 601px) {
+          body {
+              width: 600px;
+          }
+      }
+
+      a {
+          color: rgb(0,100,200);
+          text-decoration: none;
+      }
+
+      a:hover {
+          text-decoration: underline;
+      }
+
+      a:visited {
+          color: rgb(0,80,160);
+      }
+
+      img {
+          width: 100%;
+          box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+          transition: all 1s ease-in-out;
+      }
+
+      img:hover {
+          box-shadow: 0 6px 10px 0 rgb(0 0 0 / 80%), 0 8px 22px 0 rgb(0 0 0 / 40%);
+      }
+
+      code {
+          background: #baeaff;
+          border-radius: 5px;
+          padding-left: .25rem;
+          padding-right: .25rem;
+      }
+  </style>
+</head>
+<body>
+<input type="hidden"
+       value="VGhpcyBpcyB3aGVyZSB0aGUgdGVhY2hlciBTU05zIHdlcmUuIEFzIHlvdSBjYW4gc2VlIHNpbmNlIHlvdSB3ZXJlIGFibGUgdG8gZGVjb2RlIGl0IHVzaW5nIGV2ZXJ5dGhpbmcgYnVpbHRpbiB0byB0aGUgYnJvd3NlciwgdGhpcyB3YXMgbm90IGEgaGFjaw==">
+<h1>Parson's "Hack"</h1>
+<p>
+  In case you missed it, a reporter for the St. Louis Post Dispatch found that
+  <a href="https://www.stltoday.com/news/local/education/missouri-teachers-social-security-numbers-at-risk-on-state-agencys-website/article_f3339700-ece0-54a1-9a45-f300321b7c82.html">
+    teacher SSNs were embedded in the HTML of a government website
+  </a>. After they
+  notified the government, the Governor of Missouri accused them of hacking.
+</p>
+<p>
+  I thought it would be useful to show to all the non-developers out there what is going on
+  in this story, so I've put together this page that has a secret message embedded in the HTML.
+</p>
+<p>
+  First, let's view the source of this website. In most browsers you can right-click this
+  page and select "View Page Source" from the context menu. You should see something like this:
+</p>
+<a href="source.png" target="_blank">
+  <img src="source.png" alt="source code example screenshot"/>
+</a>
+<p>
+  At the top of the document, there's a hidden <code>input</code> field with a value that has
+  a lot of jumbled letters and numbers. We don't know exactly how the hidden teacher data was
+  stored in the document since they took the website down, but a hidden <code>input</code> is one way
+  it could have been done.
+</p>
+<p>
+  This hidden value is base64 encoded. How can you tell? This particular value ends in equal signs
+  (<code>=</code>) which is a big hint it's base64 since that is a symbol for padding that base64 encoding
+  uses. That means that many base64 encoded strings will end in <code>=</code>.
+</p>
+<p>
+  Another way to tell is by simply trying to decode it. There aren't other encodings commonly used,
+  so if you see a jumble of letters and numbers, it's probably base64 encoded.
+</p>
+<p>
+  So let's go ahead and decode that value. Copy it to the clipboard, then open your browser's
+  "Developer Tools" and go to the Console. To do this in Chrome, you can right-click this page and select
+  Inspect, then click the Console tab.
+</p>
+<p>
+  Once in Console, use JavaScript's builtin <code>atob</code> function to decode the message.
+  It should look something like this:
+</p>
+<a href="decoded.png" target="_blank">
+  <img src="decoded.png" alt="decoded secret message">
+</a>
+<p>
+  There you have it, you can see my hidden message. However, you didn't just hack my website because:
+</p>
+<ul>
+  <li>the data was sent to your computer while using the page normally</li>
+  <li>the data was not visible in the rendered document, but could be seen when viewing source</li>
+  <li>the data was encoded with a well-known encoding that can be decoded directly in the browser</li>
+</ul>
+<p style="padding-bottom: 10rem"></p>
+</body>
+</html>
